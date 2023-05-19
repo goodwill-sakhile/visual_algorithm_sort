@@ -68,8 +68,10 @@ root = Builder.load_string("""
 					color:[1, 1, 1, 1]
  """)
 class MainScreen(MDScreen):
+	#root screen of the app
 	pass
 class TestApp(MDApp):
+ 	#main app loop object
  	def build(self):
  		root = MainScreen()
  		return root
