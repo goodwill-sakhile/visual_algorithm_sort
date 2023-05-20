@@ -1,6 +1,7 @@
 from kivymd.app import MDApp
 from kivymd.uix.screen import MDScreen
 from kivy.lang import Builder
+#all sorting algorithms
 root = Builder.load_string("""
 <MainScreen>:
 	MDBoxLayout:
