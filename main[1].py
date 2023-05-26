@@ -93,8 +93,8 @@ class MainScreen(MDScreen):
 		super().__init__(**kwargs)
 		self.values_list = []
 	def generateValues(self):
-		for i in range(100):
-			value  = random.choice(list(range(1, 100)))
+		for i in range(10):
+			value  = random.choice(list(range(1, 10)))
 			self.values_list.append(value)
 	def getWidthOfEachBar(self):
 		length = len(self.values_list) - 1
@@ -111,18 +111,23 @@ class MainScreen(MDScreen):
 			self.ids.graph_box.add_widget(bar_box)
 class TestApp(MDApp):
  	#main app loop object
- 	def printSwapIndex(self, bubble):
+ 	def printSwapIndex(self, main_object, bubble):
  		time.sleep(0.1)
- 		for i in range(9):
+ 		for i in range(len(main_object.values_list)):
  			print(bubble.index_swap)
- 			time.sleep(0.9)
+ 			time.sleep(1)
+ 			graph_length = len(main_object.ids.graph_box.children) - 1
+ 			first_box = main_object.ids.graph_box.children[graph_length - bubble.index_swap[0]]
+ 			second_box = main_object.ids.graph_box.children[graph_length - bubble.index_swap[1]]
+ 			main_object.ids.graph_box.children[graph_length - bubble.index_swap[1]] = first_box
+ 			main_object.ids.graph_box.children[graph_length - bubble.index_swap[0]] = second_box
  	def build(self):
  		root = MainScreen()
  		root.generateValues()
  		root.addBarOnGraph()
  		bubble = bubble_sort_algorithm.BubbleSort()
- 		thread.start_new_thread(bubble.bubbleSort, ([8, 3, 5, 6, 2, 3, 1, 9, 10], ))
- 		thread.start_new_thread(self.printSwapIndex, (bubble, ))
+ 		thread.start_new_thread(bubble.bubbleSort, (root.values_list, ))
+ 		thread.start_new_thread(self.printSwapIndex, (root, bubble, ))
  		return root
 if __name__ == "__main__":
 	TestApp().run()
