@@ -15,4 +15,7 @@ class BubbleSort:
 					temp = _array[j]
 					_array[j] = _array[j + 1]
 					_array[j + 1] = temp
+				#else:
+					#time.sleep(1)
+		print("Sorted array: ", _array)
 		return _array
