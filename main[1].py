@@ -93,6 +93,7 @@ class MainScreen(MDScreen):
 		super().__init__(**kwargs)
 		self.values_list = []
 	def generateValues(self):
+		#generate values randomly that willbe sorted
 		for i in range(10):
 			value  = random.choice(list(range(1, 10)))
 			self.values_list.append(value)
