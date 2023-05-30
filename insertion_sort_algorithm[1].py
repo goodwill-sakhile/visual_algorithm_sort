@@ -1,3 +1,4 @@
 #insertion sort algorithm
-Class InsertionSort:
-	pass
+class InsertionSort:
+	def insertionSort(self):
+		pass
