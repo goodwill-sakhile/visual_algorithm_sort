@@ -92,10 +92,13 @@ class MainScreen(MDScreen):
 	def __init__(self, **kwargs):
 		super().__init__(**kwargs)
 		self.values_list = []
+		self.value_pool = list(range(1, 100))
+		random.shuffle(self.value_pool)
 	def generateValues(self):
 		#generate values randomly that willbe sorted
-		for i in range(10):
-			value  = random.choice(list(range(1, 10)))
+		for i in range(len(self.value_pool)):
+			value  = random.choice(self.value_pool)
+			self.value_pool.remove(value)
 			self.values_list.append(value)
 	def getWidthOfEachBar(self):
 		length = len(self.values_list) - 1
@@ -113,23 +116,24 @@ class MainScreen(MDScreen):
 			self.ids.graph_box.add_widget(bar_box)
 class TestApp(MDApp):
  	#main app loop object
- 	def printSwapIndex(self, main_object, bubble):
- 		time.sleep(0.1)
- 		for i in range(len(main_object.values_list)):
- 			print(bubble.index_swap)
- 			time.sleep(1)
+ 	def printSwapIndex(self, swap_list, main_object):
+ 		#time.sleep(0.1)
+ 		for i in range(len(swap_list)):
+ 			#print(bubble.index_swap)
+ 			time.sleep(0.01)
  			graph_length = len(main_object.ids.graph_box.children) - 1
- 			first_box = main_object.ids.graph_box.children[graph_length - bubble.index_swap[0]]
- 			second_box = main_object.ids.graph_box.children[graph_length - bubble.index_swap[1]]
- 			main_object.ids.graph_box.children[graph_length - bubble.index_swap[1]] = first_box
- 			main_object.ids.graph_box.children[graph_length - bubble.index_swap[0]] = second_box
+ 			first_box = main_object.ids.graph_box.children[graph_length - swap_list[i][0]]
+ 			second_box = main_object.ids.graph_box.children[graph_length - swap_list[i][1]]
+ 			main_object.ids.graph_box.children[graph_length - swap_list[i][1]] = first_box
+ 			main_object.ids.graph_box.children[graph_length - swap_list[i][0]] = second_box
  	def build(self):
  		root = MainScreen()
  		root.generateValues()
  		root.addBarOnGraph()
  		bubble = bubble_sort_algorithm.BubbleSort()
- 		thread.start_new_thread(bubble.bubbleSort, (root.values_list, ))
- 		thread.start_new_thread(self.printSwapIndex, (root, bubble, ))
+ 		_sorted_array, swap_list = bubble.bubbleSort(root.values_list)
+ 		thread.start_new_thread(self.printSwapIndex, (swap_list, root, ))
+ 		print("@@@: ", root.ids.graph_box.children[0])
  		return root
 if __name__ == "__main__":
 	TestApp().run()
