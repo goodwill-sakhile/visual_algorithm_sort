@@ -1,8 +1,10 @@
 from kivymd.app import MDApp
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.screen import MDScreen
+from kivy.uix.screenmanager import SlideTransition
 from kivy.lang import Builder
 import _thread as thread
+from touch import TouchBox
 import random
 import time
 import bubble_sort_algorithm
@@ -13,6 +15,7 @@ root = Builder.load_string("""
 	size_hint_x:None
 	width:"10dp"
 <MainScreen>:
+	id:main_screen_object
 	MDBoxLayout:
 		orientation:"vertical"
 		MDBoxLayout:
@@ -23,11 +26,12 @@ root = Builder.load_string("""
 			MDBoxLayout:
 			MDBoxLayout:
 				size_hint_x:None
-				width:"175dp"
+				width:"200dp"
 				orientation:"vertical"
 				padding:"0dp", "0dp", "10dp", "0dp"
 				MDBoxLayout:
-				MDBoxLayout:
+				SortAlgorithmTypeBox:
+					root:main_screen_object
 					size_hint_y:None
 					height:"40dp"
 					radius:[30, 30, 30, 30]
@@ -36,11 +40,13 @@ root = Builder.load_string("""
 						size_hint:None, None
 						size:"40dp", "40dp"
 					MDLabel:
-						text:"Insert Sort"
+						id:sort_type
+						text:"Insertion Sort"
 						text_size:self.size
 						halign:"center"
 						valign:"middle"
 					MDIconButton:
+						id:chevron_type
 						size_hint:None, None
 						size:"40dp", "40dp"
 						icon:"chevron-down"
@@ -70,12 +76,104 @@ root = Builder.load_string("""
 								md_bg_color:[255/float(255), 255/float(220), 255/float(255), 1]
 				MDBoxLayout:
 					pos:self.parent.pos
+					ScreenManager:
+						id:sort_type_screen_manager
+						Screen:
+							name:"empty_screen"
+						Screen:
+							name:"choose_sort_algorithm_screen"
+							MDBoxLayout:
+								orientation:"vertical"
+								MDBoxLayout:
+									md_bg_color:[20/float(255), 20/float(255), 20/float(255), 1]
+									orientation:"vertical"
+									padding:"10dp", "10dp"
+									spacing:10
+									Widget:
+									MDBoxLayout:
+										size_hint_y:None
+										height:"50dp"
+										radius:[40, 40, 40, 40]
+										md_bg_color:[0/float(255), 150/float(255), 220/float(255), 1]
+										MDLabel:
+											text:"Insertion Sort"
+											text_size:self.size
+											halign:"center"
+											valign:"middle"
+											color:[1, 1, 1, 1]
+									MDBoxLayout:
+										size_hint_y:None
+										height:"50dp"
+										radius:[40, 40, 40, 40]
+										md_bg_color:[220/float(255), 220/float(255), 220/float(255), 1]
+										MDLabel:
+											text:"Bubble Sort"
+											text_size:self.size
+											halign:"center"
+											valign:"middle"
+											color:[0, 0, 0, 1]
+									MDBoxLayout:
+										size_hint_y:None
+										height:"50dp"
+										radius:[40, 40, 40, 40]
+										md_bg_color:[220/float(255), 220/float(255), 220/float(255), 1]
+										MDLabel:
+											text:"Merge Sort"
+											text_size:self.size
+											halign:"center"
+											valign:"middle"
+											color:[0, 0, 0, 1]
+									MDBoxLayout:
+										size_hint_y:None
+										height:"50dp"
+										radius:[40, 40, 40, 40]
+										md_bg_color:[220/float(255), 220/float(255), 220/float(255), 1]
+										MDLabel:
+											text:"Quick Sort"
+											text_size:self.size
+											halign:"center"
+											valign:"middle"
+											color:[0, 0, 0, 1]
+									MDBoxLayout:
+										size_hint_y:None
+										height:"50dp"
+										radius:[40, 40, 40, 40]
+										md_bg_color:[220/float(255), 220/float(255), 220/float(255), 1]
+										MDLabel:
+											text:"Selection Sort"
+											text_size:self.size
+											halign:"center"
+											valign:"middle"
+											color:[0, 0, 0, 1]
+									MDBoxLayout:
+										size_hint_y:None
+										height:"50dp"
+										radius:[40, 40, 40, 40]
+										md_bg_color:[220/float(255), 220/float(255), 220/float(255), 1]
+										MDLabel:
+											text:"Heap Sort"
+											text_size:self.size
+											halign:"center"
+											valign:"middle"
+											color:[0, 0, 0, 1]
+									MDBoxLayout:
+										size_hint_y:None
+										height:"50dp"
+										radius:[40, 40, 40, 40]
+										md_bg_color:[220/float(255), 220/float(255), 220/float(255), 1]
+										MDLabel:
+											text:" Apply"
+											text_size:self.size
+											halign:"center"
+											valign:"middle"
+											color:[0, 0, 0, 1]
+									Widget:
 		MDBoxLayout:
 			size_hint_y:None
 			height:"60dp"
 			padding:5
 			MDBoxLayout:
-				md_bg_color:[0, 0, 0, 1]
+				md_bg_color:[0, 150/float(255), 255/float(255), 1]
 				radius:[40, 40, 40, 40]
 				MDLabel:
 					text:"Start Sort"
@@ -87,6 +185,13 @@ root = Builder.load_string("""
 class BarBox(MDBoxLayout):
 	def __init__(self, **kwargs):
 		super().__init__(**kwargs)
+class SortAlgorithmTypeBox(TouchBox):
+	def respondToTouch(self):
+		self.md_bg_color = [0, 150/float(255), 255/float(255), 1]
+		self.root.ids.sort_type.color = [1, 1, 1, 1]
+		self.root.ids.chevron_type.icon = "chevron-up"
+		self.root.ids.sort_type_screen_manager.transition = SlideTransition(direction ="left")
+		self.root.ids.sort_type_screen_manager.current = "choose_sort_algorithm_screen"
 class MainScreen(MDScreen):
 	#root screen of the app
 	def __init__(self, **kwargs):
@@ -131,8 +236,8 @@ class TestApp(MDApp):
  		root.generateValues()
  		root.addBarOnGraph()
  		bubble = bubble_sort_algorithm.BubbleSort()
- 		_sorted_array, swap_list = bubble.bubbleSort(root.values_list)
- 		thread.start_new_thread(self.printSwapIndex, (swap_list, root, ))
+ 		#_sorted_array, swap_list = bubble.bubbleSort(root.values_list)
+ 		#thread.start_new_thread(self.printSwapIndex, (swap_list, root, ))
  		print("@@@: ", root.ids.graph_box.children[0])
  		return root
 if __name__ == "__main__":
