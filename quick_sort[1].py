@@ -1,2 +1,2 @@
 class QuuckSort:
-	pass
+	
