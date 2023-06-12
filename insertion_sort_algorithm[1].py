@@ -1,4 +1,3 @@
-#insertion sort algorithm
 class InsertionSort:
 	def insertionSort(self, input_list):
 		for i in range(1, len(input_list)):
