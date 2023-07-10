@@ -173,7 +173,7 @@ root = Builder.load_string("""
 			height:"60dp"
 			padding:5
 			MDBoxLayout:
-				md_bg_color:[0, 150/float(255), 255/float(255), 1]
+				md_bg_color:[0, 0/float(255), 0/float(255), 1]
 				radius:[40, 40, 40, 40]
 				MDLabel:
 					text:"Start Sort"
@@ -219,6 +219,24 @@ class MainScreen(MDScreen):
 			bar_width = self.getWidthOfEachBar()
 			bar_box.width = bar_width
 			self.ids.graph_box.add_widget(bar_box)
+	def swapIndex(self, swap_list, main_object):
+		for i in range(len(swap_list)):
+ 			time.sleep(0.01)
+ 			graph_length = len(main_object.ids.graph_box.children) - 1
+ 			first_box = main_object.ids.graph_box.children[graph_length - swap_list[i][0]]
+ 			second_box = main_object.ids.graph_box.children[graph_length - swap_list[i][1]]
+ 			main_object.ids.graph_box.children[graph_length - swap_list[i][1]] = first_box
+ 			main_object.ids.graph_box.children[graph_length - swap_list[i][0]] = second_box
+	def sortWithBubbleSort(self):
+		bubble = bubble_sort_algorithm.BubbleSort()
+		_sorted_array, swap_list = bubble.bubbleSort(root.values_list)
+		return swap_list
+	def sortWithQuickSort(self):
+		pass
+	def sortWithMergeSort(self):
+		pass
+	def sortWithSelectionSort(self):
+		pass
 class TestApp(MDApp):
  	#main app loop object
  	def printSwapIndex(self, swap_list, main_object):
