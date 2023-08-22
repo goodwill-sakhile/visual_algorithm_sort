@@ -214,7 +214,7 @@ class MainScreen(MDScreen):
 		self.value_pool = list(range(1, 100))
 		random.shuffle(self.value_pool)
 	def generateValues(self):
-		#generate values randomly that willbe sorted
+		#generate values randomly that will be sorted
 		for i in range(len(self.value_pool)):
 			value  = random.choice(self.value_pool)
 			self.value_pool.remove(value)
