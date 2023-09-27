@@ -273,7 +273,7 @@ class TestApp(MDApp):
  		bubble = bubble_sort_algorithm.BubbleSort()
  		_sorted_array, swap_list = bubble.bubbleSort(root.values_list)
  		thread.start_new_thread(self.printSwapIndex, (swap_list, root, ))
- 		print("@@@: ", root.ids.graph_box.children[0])
+ 		#print("@@@: ", root.ids.graph_box.children[0])
  		return root
 if __name__ == "__main__":
 	TestApp().run()
