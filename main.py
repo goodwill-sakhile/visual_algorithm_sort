@@ -8,6 +8,7 @@ from touch import TouchBox
 import random
 import time
 import bubble_sort_algorithm
+import merge_0
 #all sorting algorithms
 root = Builder.load_string("""
 <BarBox>:
@@ -216,6 +217,12 @@ class MainScreen(MDScreen):
 		self.values_list = []
 		self.value_pool = list(range(1, 100))
 		random.shuffle(self.value_pool)
+	def putIndexes(self, pool):
+	    print("pool", pool)
+	    _pool = []
+	    for i in range(pool):
+	        _pool.append([pool[i], i])
+	    return _pool
 	def generateValues(self):
 		#generate values randomly that will be sorted
 		for i in range(len(self.value_pool)):
@@ -268,11 +275,13 @@ class TestApp(MDApp):
  			main_object.ids.graph_box.children[graph_length - swap_list[i][0]] = second_box
  	def build(self):
  		root = MainScreen()
- 		root.generateValues()
+ 		#root.generateValues()
  		root.addBarOnGraph()
  		bubble = bubble_sort_algorithm.BubbleSort()
  		_sorted_array, swap_list = bubble.bubbleSort(root.values_list)
- 		thread.start_new_thread(self.printSwapIndex, (swap_list, root, ))
+ 		root.putIndexes(root.values_list)
+ 		#merge_swap, res = merge_0.mergeSort(root.putIndexes(root.values_list))
+ 		#thread.start_new_thread(self.printSwapIndex, (merge_swap, root, ))
  		#print("@@@: ", root.ids.graph_box.children[0])
  		return root
 if __name__ == "__main__":
