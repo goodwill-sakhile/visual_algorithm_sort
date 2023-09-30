@@ -234,7 +234,7 @@ class MainScreen(MDScreen):
 		graph_width = (self.ids.graph_box.parent.parent.width - 6) - (length*2)
 		return graph_width/float(len(self.values_list))
 	def addBarOnGraph(self):
-		#add bar o
+		#add bar
 		for element in self.values_list:
 			perc = (element/float(max(self.values_list)))*100
 			bar_box = BarBox()
