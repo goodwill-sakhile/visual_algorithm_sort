@@ -284,7 +284,7 @@ class TestApp(MDApp):
  		merge = MergeSort()
  		res = merge.mergeSort(ind)
  		thread.start_new_thread(self.printSwapIndex, (merge.swap_list, root, ))
- 		#print("@@@: ", root.ids.graph_box.children[0])
+ 		#print("@@: ", root.ids.graph_box.children[0])
  		return root
 if __name__ == "__main__":
 	TestApp().run()
