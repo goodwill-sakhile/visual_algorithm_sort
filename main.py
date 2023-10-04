@@ -215,13 +215,14 @@ class MainScreen(MDScreen):
 	def __init__(self, **kwargs):
 		super().__init__(**kwargs)
 		self.values_list = []
-		self.value_pool = list(range(1, 100))
+		self.value_pool = list(range(1, 5))
 		random.shuffle(self.value_pool)
 	def putIndexes(self, pool):
-	    print("pool", pool)
+	    #print("pool", pool)
 	    _pool = []
 	    for i in range(len(pool)):
 	        _pool.append([pool[i], i])
+	    #print("POOL", _pool)
 	    return _pool
 	def generateValues(self):
 		#generate values randomly that will be sorted
@@ -245,7 +246,7 @@ class MainScreen(MDScreen):
 			self.ids.graph_box.add_widget(bar_box)
 	def swapIndex(self, swap_list, main_object):
 		for i in range(len(swap_list)):
- 			time.sleep(0.01)
+ 			time.sleep(1)
  			graph_length = len(main_object.ids.graph_box.children) - 1
  			first_box = main_object.ids.graph_box.children[graph_length - swap_list[i][0]]
  			second_box = main_object.ids.graph_box.children[graph_length - swap_list[i][1]]
@@ -255,35 +256,45 @@ class MainScreen(MDScreen):
 		bubble = bubble_sort_algorithm.BubbleSort()
 		_sorted_array, swap_list = bubble.bubbleSort(root.values_list)
 		return swap_list
-	def sortWithQuickSort(self):
-		pass
 	def sortWithMergeSort(self):
+	    merge = MergeSort()
+	    values_list = self.putIndexes(self.values_list)
+	    print("ROOT:", values_list)
+	    sorted = merge.mergeSort(values_list)
+	    print("Sorted:", sorted)
+	    return merge.swap_list
+	def sortWithQuickSort(self):
 		pass
 	def sortWithSelectionSort(self):
 		pass
 class TestApp(MDApp):
  	#main app loop object
  	def printSwapIndex(self, swap_list, main_object):
+ 		counter = 0
  		#time.sleep(0.1)
  		for i in range(len(swap_list)):
  			#print(bubble.index_swap)
- 			time.sleep(0.01)
+ 			time.sleep(1)
+ 			counter += 1
  			graph_length = len(main_object.ids.graph_box.children) - 1
  			first_box = main_object.ids.graph_box.children[graph_length - swap_list[i][0]]
  			second_box = main_object.ids.graph_box.children[graph_length - swap_list[i][1]]
  			main_object.ids.graph_box.children[graph_length - swap_list[i][1]] = first_box
  			main_object.ids.graph_box.children[graph_length - swap_list[i][0]] = second_box
+ 		#print("COUNTER:", counter)
  	def build(self):
  		root = MainScreen()
  		root.generateValues()
  		root.addBarOnGraph()
- 		bubble = bubble_sort_algorithm.BubbleSort()
- 		_sorted_array, swap_list = bubble.bubbleSort(root.values_list)
- 		root.putIndexes(root.values_list)
+ 		#bubble = bubble_sort_algorithm.BubbleSort()
+ 		#_sorted_array, swap_list = bubble.bubbleSort(root.values_list)
+ 		#root.putIndexes(root.values_list)
  		ind = root.putIndexes(root.values_list)
- 		merge = MergeSort()
- 		res = merge.mergeSort(ind)
- 		thread.start_new_thread(self.printSwapIndex, (merge.swap_list, root, ))
+ 		#merge = MergeSort()
+ 		swap = root.sortWithMergeSort()
+ 		print("Swap:", swap)
+ 		#res = merge.mergeSort(ind)
+ 		thread.start_new_thread(self.printSwapIndex, (swap, root, ))
  		#print("@@: ", root.ids.graph_box.children[0])
  		return root
 if __name__ == "__main__":
