@@ -214,9 +214,11 @@ class MainScreen(MDScreen):
 	#root screen of the app
 	def __init__(self, **kwargs):
 		super().__init__(**kwargs)
-		self.values_list = []
-		self.value_pool = list(range(1, 5))
-		random.shuffle(self.value_pool)
+		self.values_list = [4, 1, 3, 2, 6, 5, 7]
+		#self.values_list = []
+		self.value_pool = [4, 1, 3, 2]
+		#self.value_pool = list(range(1, 5))
+		#random.shuffle(self.value_pool)
 	def putIndexes(self, pool):
 	    #print("pool", pool)
 	    _pool = []
@@ -249,6 +251,7 @@ class MainScreen(MDScreen):
  			time.sleep(1)
  			graph_length = len(main_object.ids.graph_box.children) - 1
  			first_box = main_object.ids.graph_box.children[graph_length - swap_list[i][0]]
+ 			print(graph_length - swap_list[i][0])
  			second_box = main_object.ids.graph_box.children[graph_length - swap_list[i][1]]
  			main_object.ids.graph_box.children[graph_length - swap_list[i][1]] = first_box
  			main_object.ids.graph_box.children[graph_length - swap_list[i][0]] = second_box
@@ -260,7 +263,7 @@ class MainScreen(MDScreen):
 	    merge = MergeSort()
 	    values_list = self.putIndexes(self.values_list)
 	    print("ROOT:", values_list)
-	    sorted = merge.mergeSort(values_list)
+	    sorted = merge.mergeSort(values_list, 0)
 	    print("Sorted:", sorted)
 	    return merge.swap_list
 	def sortWithQuickSort(self):
@@ -269,6 +272,28 @@ class MainScreen(MDScreen):
 		pass
 class TestApp(MDApp):
  	#main app loop object
+ 	def reverseList(self, _list):
+ 		new_list = []
+ 		counter = len(_list)
+ 		while counter > 0:
+ 			new_list.append(_list[counter - 1])
+ 			counter -= 1
+ 		return new_list
+ 	def swapTest(self, _object, swap_list):
+ 		print("Children:", _object.ids.graph_box.children)
+ 		children_list = _object.ids.graph_box.children
+ 		reversed_children_list = self.reverseList(children_list)
+ 		print("Reversed:", reversed_children_list)
+ 		counter = len(_object.ids.graph_box.children) - 1
+ 		#for i in range(len(swap_list)):
+ 		temp = _object.ids.graph_box.children[swap_list[counter][0]]
+ 		print("Temp:", temp)
+ 		#_object.ids.graph_box.children[swap_list[0][0]] = reversed_children_list[swap_list[0][1]]
+ 		#_object.ids.graph_box.children[swap_list[0][1]] = temp
+ 		#for element in swap_list:
+ 		#	temp = _object.ids.graph_box.children[element[0]]
+ 		#	_object.ids.graph_box.children[element[0]] = _object.ids.graph_box.children[element[1]]
+ 		#	_object.ids.graph_box.children[ element[1]] = temp	
  	def printSwapIndex(self, swap_list, main_object):
  		counter = 0
  		#time.sleep(0.1)
@@ -284,7 +309,7 @@ class TestApp(MDApp):
  		#print("COUNTER:", counter)
  	def build(self):
  		root = MainScreen()
- 		root.generateValues()
+ 		#root.generateValues()
  		root.addBarOnGraph()
  		#bubble = bubble_sort_algorithm.BubbleSort()
  		#_sorted_array, swap_list = bubble.bubbleSort(root.values_list)
@@ -293,8 +318,9 @@ class TestApp(MDApp):
  		#merge = MergeSort()
  		swap = root.sortWithMergeSort()
  		print("Swap:", swap)
+ 		print("Test:", self.swapTest(root, swap))
  		#res = merge.mergeSort(ind)
- 		thread.start_new_thread(self.printSwapIndex, (swap, root, ))
+ 		#thread.start_new_thread(self.printSwapIndex, (swap, root, ))
  		#print("@@: ", root.ids.graph_box.children[0])
  		return root
 if __name__ == "__main__":
