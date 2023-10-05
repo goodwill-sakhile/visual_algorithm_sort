@@ -17,15 +17,17 @@ class MergeSort:
             _pool.remove(value)
             new_pool.append(value)
         return new_pool
-    def mergeSort(self, unsorted_list):
+    def mergeSort(self, unsorted_list, counter):
         if len(unsorted_list)  <= 1:
             return unsorted_list
         middle = len(unsorted_list) // 2
         left_list = unsorted_list[:middle]
         right_list = unsorted_list[middle:]
         #print(right_list)
-        left_list = self.mergeSort(left_list)
-        right_list = self.mergeSort(right_list)
+        counter+=1
+        print("counter:", counter)
+        left_list = self.mergeSort(left_list, counter)
+        right_list = self.mergeSort(right_list, middle)
     
         x, y =  list(self.merge(left_list, right_list))
         #print("y", y)
@@ -34,8 +36,9 @@ class MergeSort:
     def merge(self, left_half, right_half):
         res = []
         swap_list = []
+        counter = 0
         while len(left_half) != 0 and len(right_half) != 0:
-            count = 0
+            
             if left_half[0][0] < right_half[0][0]:
                 res.append(left_half[0])
                 #self.swap_list.append([right_half[0][1], left_half[0][1]])
@@ -46,6 +49,7 @@ class MergeSort:
                 #print([right_half[0][1], left_half[0][1]])
                 res.append(right_half[0])
                 right_half.remove(right_half[0])
+            
         if len(left_half) == 0:
             res = res + right_half
         else:
