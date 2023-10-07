@@ -89,12 +89,13 @@ root = Builder.load_string("""
 							MDBoxLayout:
 								orientation:"vertical"
 								MDBoxLayout:
+									root:main_screen_object
 									md_bg_color:[20/float(255), 20/float(255), 20/float(255), 1]
 									orientation:"vertical"
 									padding:"10dp", "10dp"
 									spacing:10
 									Widget:
-									MDBoxLayout:
+									SortAlgorithm:
 										size_hint_y:None
 										height:"50dp"
 										radius:[40, 40, 40, 40]
@@ -105,7 +106,7 @@ root = Builder.load_string("""
 											halign:"center"
 											valign:"middle"
 											color:[1, 1, 1, 1]
-									MDBoxLayout:
+									SortAlgorithm:
 										size_hint_y:None
 										height:"50dp"
 										radius:[40, 40, 40, 40]
@@ -116,7 +117,7 @@ root = Builder.load_string("""
 											halign:"center"
 											valign:"middle"
 											color:[0, 0, 0, 1]
-									MDBoxLayout:
+									SortAlgorithm:
 										size_hint_y:None
 										height:"50dp"
 										radius:[40, 40, 40, 40]
@@ -127,7 +128,7 @@ root = Builder.load_string("""
 											halign:"center"
 											valign:"middle"
 											color:[0, 0, 0, 1]
-									MDBoxLayout:
+									SortAlgorithm:
 										size_hint_y:None
 										height:"50dp"
 										radius:[40, 40, 40, 40]
@@ -138,7 +139,7 @@ root = Builder.load_string("""
 											halign:"center"
 											valign:"middle"
 											color:[0, 0, 0, 1]
-									MDBoxLayout:
+									SortAlgorithm:
 										size_hint_y:None
 										height:"50dp"
 										radius:[40, 40, 40, 40]
@@ -149,7 +150,7 @@ root = Builder.load_string("""
 											halign:"center"
 											valign:"middle"
 											color:[0, 0, 0, 1]
-									MDBoxLayout:
+									SortAlgorithm:
 										size_hint_y:None
 										height:"50dp"
 										radius:[40, 40, 40, 40]
@@ -165,6 +166,7 @@ root = Builder.load_string("""
 										height:"50dp"
 										spacing:"5dp"
 										CancelButtonBox:
+										    root:main_screen_object
 										    radius:[40, 40, 40, 40]
 										    md_bg_color:[220/float(255), 0/float(255), 0/float(255), 1]
 										    MDLabel:
@@ -200,6 +202,11 @@ root = Builder.load_string("""
 class BarBox(MDBoxLayout):
 	def __init__(self, **kwargs):
 		super().__init__(**kwargs)
+class SortAlgorithm(TouchBox):
+	def respondToTouch(self):
+		self.parent.root.turnOffAllAlgorithmBoxes(self.parent)
+		self.md_bg_color = [0, 150/float(255), 220/float(255), 1]
+		self.children[0].color = [1, 1, 1, 1]
 class SortAlgorithmTypeBox(TouchBox):
 	def respondToTouch(self):
 		self.md_bg_color = [0, 150/float(255), 255/float(255), 1]
@@ -209,16 +216,22 @@ class SortAlgorithmTypeBox(TouchBox):
 		self.root.ids.sort_type_screen_manager.current = "choose_sort_algorithm_screen"
 class CancelButtonBox(TouchBox):
     def respondToTouch(self):
-        pass
+        self.root.ids.sort_type_screen_manager.transition = SlideTransition(direction = "right")
+        self.root.ids.sort_type_screen_manager.current = "empty_screen"
 class MainScreen(MDScreen):
 	#root screen of the app
 	def __init__(self, **kwargs):
 		super().__init__(**kwargs)
 		self.values_list = [4, 1, 3, 2, 6, 5, 7]
+		self.sort_algorithm = "insertion_algorithm"
 		#self.values_list = []
 		self.value_pool = [4, 1, 3, 2]
 		#self.value_pool = list(range(1, 5))
 		#random.shuffle(self.value_pool)
+	def turnOffAllAlgorithmBoxes(self, parent):
+		for child in parent.children[2:]:
+			child.md_bg_color = [220/float(255), 220/float(255), 220/float(255), 1]
+			child.children[0].color = [0, 0, 0, 1]
 	def putIndexes(self, pool):
 	    #print("pool", pool)
 	    _pool = []
@@ -316,9 +329,9 @@ class TestApp(MDApp):
  		#root.putIndexes(root.values_list)
  		ind = root.putIndexes(root.values_list)
  		#merge = MergeSort()
- 		swap = root.sortWithMergeSort()
- 		print("Swap:", swap)
- 		print("Test:", self.swapTest(root, swap))
+ 		#swap = root.sortWithMergeSort()
+ 		#print("Swap:", swap)
+ 		#print("Test:", self.swapTest(root, swap))
  		#res = merge.mergeSort(ind)
  		#thread.start_new_thread(self.printSwapIndex, (swap, root, ))
  		#print("@@: ", root.ids.graph_box.children[0])
