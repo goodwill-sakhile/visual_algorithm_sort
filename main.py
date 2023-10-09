@@ -8,6 +8,9 @@ from touch import TouchBox
 import random
 import time
 import bubble_sort_algorithm
+import insertionSort
+import selectionSort
+import shellSort
 from merge_0 import MergeSort
 #all sorting algorithms
 root = Builder.load_string("""
@@ -89,6 +92,7 @@ root = Builder.load_string("""
 							MDBoxLayout:
 								orientation:"vertical"
 								MDBoxLayout:
+									id:algorithms_list
 									root:main_screen_object
 									md_bg_color:[20/float(255), 20/float(255), 20/float(255), 1]
 									orientation:"vertical"
@@ -96,6 +100,7 @@ root = Builder.load_string("""
 									spacing:10
 									Widget:
 									SortAlgorithm:
+										algorithm:"insertion_sort"
 										size_hint_y:None
 										height:"50dp"
 										radius:[40, 40, 40, 40]
@@ -107,6 +112,7 @@ root = Builder.load_string("""
 											valign:"middle"
 											color:[1, 1, 1, 1]
 									SortAlgorithm:
+										algorithm:"bubble_sort"
 										size_hint_y:None
 										height:"50dp"
 										radius:[40, 40, 40, 40]
@@ -118,6 +124,7 @@ root = Builder.load_string("""
 											valign:"middle"
 											color:[0, 0, 0, 1]
 									SortAlgorithm:
+										algorithm:"merge_sort"
 										size_hint_y:None
 										height:"50dp"
 										radius:[40, 40, 40, 40]
@@ -129,6 +136,7 @@ root = Builder.load_string("""
 											valign:"middle"
 											color:[0, 0, 0, 1]
 									SortAlgorithm:
+										algorithm:"quick_sort"
 										size_hint_y:None
 										height:"50dp"
 										radius:[40, 40, 40, 40]
@@ -140,6 +148,7 @@ root = Builder.load_string("""
 											valign:"middle"
 											color:[0, 0, 0, 1]
 									SortAlgorithm:
+										algorithm:"selection_sort"
 										size_hint_y:None
 										height:"50dp"
 										radius:[40, 40, 40, 40]
@@ -151,6 +160,7 @@ root = Builder.load_string("""
 											valign:"middle"
 											color:[0, 0, 0, 1]
 									SortAlgorithm:
+										algorithm:"heap_sort"
 										size_hint_y:None
 										height:"50dp"
 										radius:[40, 40, 40, 40]
@@ -175,7 +185,8 @@ root = Builder.load_string("""
 									    		halign:"center"
 											    valign:"middle"
 										    	color:[1, 1, 1, 1]
-										MDBoxLayout:
+										ApplyButtonBox:
+										    root:main_screen_object
 										    radius:[40, 40, 40, 40]
 									    	md_bg_color:[220/float(255), 220/float(255), 220/float(255), 1]
 										    MDLabel:
@@ -185,7 +196,8 @@ root = Builder.load_string("""
 											    valign:"middle"
 										    	color:[0, 0, 0, 1]
 									Widget:
-		MDBoxLayout:
+		StartSortButton:
+			root:main_screen_object
 			size_hint_y:None
 			height:"60dp"
 			padding:5
@@ -203,10 +215,14 @@ class BarBox(MDBoxLayout):
 	def __init__(self, **kwargs):
 		super().__init__(**kwargs)
 class SortAlgorithm(TouchBox):
+	def assignSortAlgorithm(self):
+		self.parent.root.temp_sort_algorithm = self.algorithm
 	def respondToTouch(self):
+		self.parent.root.temp_algorithm_object = self
 		self.parent.root.turnOffAllAlgorithmBoxes(self.parent)
 		self.md_bg_color = [0, 150/float(255), 220/float(255), 1]
 		self.children[0].color = [1, 1, 1, 1]
+		self.assignSortAlgorithm()
 class SortAlgorithmTypeBox(TouchBox):
 	def respondToTouch(self):
 		self.md_bg_color = [0, 150/float(255), 255/float(255), 1]
@@ -216,22 +232,83 @@ class SortAlgorithmTypeBox(TouchBox):
 		self.root.ids.sort_type_screen_manager.current = "choose_sort_algorithm_screen"
 class CancelButtonBox(TouchBox):
     def respondToTouch(self):
+        self.root.temp_sort_algorithm = self.root.sort_algorithm
+        self.root.turnOffAllAlgorithmBoxes(self.parent.parent)
+        if self.root.algorithm_object == None:
+        	self.root.ids.algorithms_list.children[-2].md_bg_color = [0, 150/float(255), 220/float(255), 1]
+        	self.root.ids.algorithms_list.children[-2].children[0].color = [1, 1, 1, 1]
+        else:
+        	self.root.algorithm_object.md_bg_color = [0, 150/float(255), 220/float(255), 1]
+        	self.root.algorithm_object.children[0].color = [1, 1, 1, 1]
         self.root.ids.sort_type_screen_manager.transition = SlideTransition(direction = "right")
         self.root.ids.sort_type_screen_manager.current = "empty_screen"
+class ApplyButtonBox(TouchBox):
+	def respondToTouch(self):
+		self.root.sort_algorithm = self.root.temp_sort_algorithm
+		self.root.algorithm_object = self.root.temp_algorithm_object
+		self.root.ids.sort_type_screen_manager.transition = SlideTransition(direction = "right")
+		self.root.ids.sort_type_screen_manager.current = "empty_screen"
+		if self.root.temp_algorithm_object != None:
+			self.root.ids.sort_type.text = self.root.temp_algorithm_object.children[0].text
+class StartSortButton(TouchBox):
+	def __init__(self, **kwargs):
+		super().__init__(**kwargs)
+		self.start_mode = True
+	def respondToTouch(self):
+		if self.start_mode == True:
+			self.root.startSort()
 class MainScreen(MDScreen):
 	#root screen of the app
 	def __init__(self, **kwargs):
 		super().__init__(**kwargs)
-		self.values_list = [4, 1, 3, 2, 6, 5, 7]
+		self.values_list = []
+		self.temp_algorithm_object = None
+		self.algorithm_object = None
+		self.temp_sort_algorithm = "insertion_algorithm"
 		self.sort_algorithm = "insertion_algorithm"
 		#self.values_list = []
-		self.value_pool = [4, 1, 3, 2]
-		#self.value_pool = list(range(1, 5))
+		#self.value_pool = [4, 1, 3, 2]
+		self.value_pool = list(range(1, 100))
 		#random.shuffle(self.value_pool)
+	def startSort(self):
+		if self.sort_algorithm == "insertion_algorithm":
+			swap_list = self.sortWithInsertionSort()
+			thread.start_new_thread(self.printSwapIndex, (swap_list, self, ))
+		elif self.sort_algorithm == "bubble_sort":
+			swap_list = self.sortWithBubbleSort()
+			print("Bubble Sort Swap List:", swap_list)
+			thread.start_new_thread(self.printSwapIndex, (swap_list, self, ))
+		elif self.sort_algorithm == "merge_sort":
+			swap_list = self.sortWithMergeSort()
+			thread.start_new_thread(self.printSwapIndex, (swap_list, self, ))
+		elif self.sort_algorithm == "quick_sort":
+			swap_list = self.sortWithShellSort()
+			thread.start_new_thread(self.printSwapIndex, (swap_list, self, ))
+		elif self.sort_algorithm == "selection_sort":
+			swap_list = self.sortWithSelecttionSort()
+			print("Selection Sort Swap:", swap_list)
+			thread.start_new_thread(self.printSwapIndex, (swap_list, self, ))
+		elif self.sort_algorithm == "heap_sort":
+			pass
+	def printSwapIndex(self, swap_list, main_object):
+ 		counter = 0
+ 		#time.sleep(0.1)
+ 		for i in range(len(swap_list)):
+ 			#print(bubble.index_swap)
+ 			time.sleep(0.01)
+ 			counter += 1
+ 			graph_length = len(main_object.ids.graph_box.children) - 1
+ 			first_box = main_object.ids.graph_box.children[graph_length - swap_list[i][0]]
+ 			second_box = main_object.ids.graph_box.children[graph_length - swap_list[i][1]]
+ 			main_object.ids.graph_box.children[graph_length - swap_list[i][1]] = first_box
+ 			main_object.ids.graph_box.children[graph_length - swap_list[i][0]] = second_box
+ 		#print("COUNTER:", counter)
 	def turnOffAllAlgorithmBoxes(self, parent):
 		for child in parent.children[2:]:
 			child.md_bg_color = [220/float(255), 220/float(255), 220/float(255), 1]
-			child.children[0].color = [0, 0, 0, 1]
+			if child.children != []:
+				child.children[0].color = [0, 0, 0, 1]
+			#child.children[0].color = [0, 0, 0, 1]
 	def putIndexes(self, pool):
 	    #print("pool", pool)
 	    _pool = []
@@ -270,7 +347,21 @@ class MainScreen(MDScreen):
  			main_object.ids.graph_box.children[graph_length - swap_list[i][0]] = second_box
 	def sortWithBubbleSort(self):
 		bubble = bubble_sort_algorithm.BubbleSort()
-		_sorted_array, swap_list = bubble.bubbleSort(root.values_list)
+		_sorted_array, swap_list = bubble.bubbleSort(self.values_list)
+		return swap_list
+	def sortWithShellSort(self):
+		shell = shellSort.ShellSort()
+		swap_list = shell.shellSort(self.values_list)
+		return swap_list
+	def sortWithInsertionSort(self):
+		insertion = insertionSort.InsertionSort()
+		values_list = self.putIndexes(self.values_list)
+		swap_list = insertion.insertionSort(values_list)
+		return swap_list
+	def sortWithSelecttionSort(self):
+		selection = selectionSort.SelectionSort()
+		values_list = self.putIndexes(self.values_list)
+		swap_list = selection.selectionSort(values_list)
 		return swap_list
 	def sortWithMergeSort(self):
 	    merge = MergeSort()
@@ -322,7 +413,7 @@ class TestApp(MDApp):
  		#print("COUNTER:", counter)
  	def build(self):
  		root = MainScreen()
- 		#root.generateValues()
+ 		root.generateValues()
  		root.addBarOnGraph()
  		#bubble = bubble_sort_algorithm.BubbleSort()
  		#_sorted_array, swap_list = bubble.bubbleSort(root.values_list)
