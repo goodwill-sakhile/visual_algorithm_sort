@@ -20,5 +20,3 @@ class BubbleSort:
 					#time.sleep(1)
 		print("Sorted array: ", _array)
 		return _array, self.index_swap_list
-if __name__  == "__main__":
-	BubbleSort().bubbleSort([5, 4, 9,  3, 15, 4, 45, 90, 62, 12, 1, 3])
