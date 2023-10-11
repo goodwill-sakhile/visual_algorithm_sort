@@ -16,7 +16,5 @@ class BubbleSort:
 					_array[j] = _array[j + 1]
 					_array[j + 1] = temp
 					self.index_swap_list.append([j, j+1])
-				#else:
-					#time.sleep(1)
 		print("Sorted array: ", _array)
 		return _array, self.index_swap_list
