@@ -8,7 +8,7 @@ class ShellSort:
                 j = i
                 while j >= gap and input_list[j-gap] > temp:
                 	input_list[j] = input_list[j - gap]
-                	swap_list.append([i, j-gap])
+                	#swap_list.append([i, j-gap])
                 	j = j - gap
                 	input_list[j] = temp
                 	gap = gap//2
