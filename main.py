@@ -136,18 +136,6 @@ root = Builder.load_string("""
 											valign:"middle"
 											color:[0, 0, 0, 1]
 									SortAlgorithm:
-										algorithm:"quick_sort"
-										size_hint_y:None
-										height:"50dp"
-										radius:[40, 40, 40, 40]
-										md_bg_color:[220/float(255), 220/float(255), 220/float(255), 1]
-										MDLabel:
-											text:"Quick Sort"
-											text_size:self.size
-											halign:"center"
-											valign:"middle"
-											color:[0, 0, 0, 1]
-									SortAlgorithm:
 										algorithm:"selection_sort"
 										size_hint_y:None
 										height:"50dp"
@@ -155,18 +143,6 @@ root = Builder.load_string("""
 										md_bg_color:[220/float(255), 220/float(255), 220/float(255), 1]
 										MDLabel:
 											text:"Selection Sort"
-											text_size:self.size
-											halign:"center"
-											valign:"middle"
-											color:[0, 0, 0, 1]
-									SortAlgorithm:
-										algorithm:"heap_sort"
-										size_hint_y:None
-										height:"50dp"
-										radius:[40, 40, 40, 40]
-										md_bg_color:[220/float(255), 220/float(255), 220/float(255), 1]
-										MDLabel:
-											text:"Heap Sort"
 											text_size:self.size
 											halign:"center"
 											valign:"middle"
@@ -366,7 +342,7 @@ class MainScreen(MDScreen):
 	def sortWithMergeSort(self):
 	    merge = MergeSort()
 	    values_list = self.putIndexes(self.values_list)
-	    print("ROOT:", values_list)
+	    #print("ROOT:", values_list)
 	    sorted = merge.mergeSort(values_list, 0)
 	    print("Sorted:", sorted)
 	    return merge.swap_list
