@@ -27,7 +27,7 @@ An interactive and animated visualizer for popular sorting algorithms, built wit
 
 ---
 
-## 🛠️ Installation
+## 🛠️ Installation ()
 
 ### 🧰 Prerequisites
 
